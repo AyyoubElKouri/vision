@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+/* Ensure the app takes full height */
+html, body, #root {
+  height: 100%;
+}
