@@ -4,7 +4,7 @@ import { openDatabase } from "./database/database";
 import { runMigrations } from "./database/migrations/migrate";
 
 export type AppCore = {
-  ideas: IdeaService;
+	ideas: IdeaService;
 };
 
 /**
@@ -13,12 +13,12 @@ export type AppCore = {
  * @returns {AppCore} The initialized application core.
  */
 export function createAppCore(): AppCore {
-  const db = openDatabase();
-  runMigrations(db);
+	const db = openDatabase();
+	runMigrations(db);
 
-  const ideaRepository = new IdeaRepository(db);
+	const ideaRepository = new IdeaRepository(db);
 
-  return {
-    ideas: new IdeaService(ideaRepository)
-  };
+	return {
+		ideas: new IdeaService(ideaRepository),
+	};
 }

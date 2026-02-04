@@ -1,5 +1,5 @@
+import path from "node:path";
 import Database from "better-sqlite3";
-import path from "path";
 import { app } from "electron";
 
 export type SqliteDb = Database.Database;
@@ -11,12 +11,12 @@ export type SqliteDb = Database.Database;
  * @returns {SqliteDb} The opened SQLite database instance.
  */
 export function openDatabase(): SqliteDb {
-  const dbPath = path.join(app.getPath("userData"), "vision.db");
-  const db = new Database(dbPath);
+	const dbPath = path.join(app.getPath("userData"), "vision.db");
+	const db = new Database(dbPath);
 
-  // Enable Write-Ahead Logging (WAL) and enforce foreign key constraints
-  db.pragma("journal_mode = WAL");
-  db.pragma("foreign_keys = ON");
+	// Enable Write-Ahead Logging (WAL) and enforce foreign key constraints
+	db.pragma("journal_mode = WAL");
+	db.pragma("foreign_keys = ON");
 
-  return db;
+	return db;
 }
