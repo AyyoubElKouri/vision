@@ -1,3 +1,8 @@
+/*--------------------------------------------------------------------------------------------------
+ *                     Copyright (c) 2026 Ayyoub EL Kouri. All rights reserved.
+ *     Becoming an expert won't happen overnight, but with a bit of patience, you'll get there
+ *------------------------------------------------------------------------------------------------*/
+
 import path from "node:path";
 import { app, BrowserWindow } from "electron";
 import started from "electron-squirrel-startup";

@@ -1,3 +1,8 @@
+/*--------------------------------------------------------------------------------------------------
+ *                     Copyright (c) 2026 Ayyoub EL Kouri. All rights reserved.
+ *     Becoming an expert won't happen overnight, but with a bit of patience, you'll get there
+ *------------------------------------------------------------------------------------------------*/
+
 import { IdeaRepository } from "./apps/idea/main/idea.repository";
 import { IdeaService } from "./apps/idea/main/idea.service";
 import { openDatabase } from "./database/database";

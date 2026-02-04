@@ -1,3 +1,8 @@
+/*--------------------------------------------------------------------------------------------------
+ *                     Copyright (c) 2026 Ayyoub EL Kouri. All rights reserved.
+ *     Becoming an expert won't happen overnight, but with a bit of patience, you'll get there
+ *------------------------------------------------------------------------------------------------*/
+ 
 CREATE TABLE IF NOT EXISTS schema_migrations (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   filename TEXT NOT NULL UNIQUE,
