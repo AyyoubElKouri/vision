@@ -12,12 +12,14 @@ export type IdeaDto = {
 };
 
 export type CreateIdeaDto = {
-	number: number;
-	title: string;
-	description: string;
+	title?: string;
+	description?: string;
 };
 
-export type UpdateIdeaDto = Partial<CreateIdeaDto>;
+export type UpdateIdeaDto = {
+	id: number;
+  number?: number;
+} & Partial<CreateIdeaDto>;
 
 export type SwapIdeaDto = {
 	id: number;

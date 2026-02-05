@@ -2,12 +2,46 @@
  *                     Copyright (c) 2026 Ayyoub EL Kouri. All rights reserved.
  *     Becoming an expert won't happen overnight, but with a bit of patience, you'll get there
  *------------------------------------------------------------------------------------------------*/
- 
+
 @import "tailwindcss";
+
+@font-face {
+  font-family: "QuickSand";
+  src: url("./assets/quicksand") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
 
 /* Ensure the app takes full height */
 html,
 body,
 #root {
 	height: 100%;
+  font-family: "QuickSand", sans-serif;
+}
+
+@keyframes idea-inline-edit-in {
+	from {
+		opacity: 0;
+		transform: translateY(2px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.idea-inline-edit {
+	animation: idea-inline-edit-in 140ms ease-out;
+}
+
+/* Hide scrollbar */
+.hide-scrollbar {
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* IE & Edge */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;                /* Chrome, Safari */
 }
