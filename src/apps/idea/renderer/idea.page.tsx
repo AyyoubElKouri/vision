@@ -3,6 +3,7 @@
  *     Becoming an expert won't happen overnight, but with a bit of patience, you'll get there
  *------------------------------------------------------------------------------------------------*/
 
+import { AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 
 import type { IdeaDto } from "../contracts/idea.contract";
@@ -112,23 +113,25 @@ export function IdeaPage() {
 
 			{/* --- List of Ideas --- */}
 			<div className="flex flex-col overflow-auto hide-scrollbar">
-				{ideas.map((idea, index) => (
-					<Idea
-						key={idea.id}
-						number={idea.number}
-						title={idea.title}
-						description={idea.description}
-						position={getPosition(index, ideas.length)}
-						colorToggle={index % 2 === 0}
-						up={() => onSwap(idea.id, "up")}
-						down={() => onSwap(idea.id, "down")}
-						delete={() => onDelete(idea.id)}
-						updateTitle={(newTitle) => onUpdateTitle(idea.id, newTitle)}
-						updateDescription={(newDescription) =>
-							onUpdateDescription(idea.id, newDescription)
-						}
-					/>
-				))}
+				<AnimatePresence initial={false}>
+					{ideas.map((idea, index) => (
+						<Idea
+							key={idea.id}
+							number={idea.number}
+							title={idea.title}
+							description={idea.description}
+							position={getPosition(index, ideas.length)}
+							colorToggle={index % 2 === 0}
+							up={() => onSwap(idea.id, "up")}
+							down={() => onSwap(idea.id, "down")}
+							delete={() => onDelete(idea.id)}
+							updateTitle={(newTitle) => onUpdateTitle(idea.id, newTitle)}
+							updateDescription={(newDescription) =>
+								onUpdateDescription(idea.id, newDescription)
+							}
+						/>
+					))}
+				</AnimatePresence>
 			</div>
 
 			{/* --- Button to add a new idea --- */}

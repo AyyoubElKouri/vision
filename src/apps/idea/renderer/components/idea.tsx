@@ -3,6 +3,7 @@
  *     Becoming an expert won't happen overnight, but with a bit of patience, you'll get there
  *------------------------------------------------------------------------------------------------*/
 
+import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 import { DeleteIcon, DownIcon, UpIcon } from "./icons";
@@ -31,6 +32,12 @@ interface IdeaProps {
 	updateTitle: (newTitle: string) => void;
 	updateDescription: (newDescription: string) => void;
 }
+
+const rowSpring = {
+	type: "spring" as const,
+	stiffness: 420,
+	damping: 32,
+};
 
 export function Idea({
 	number,
@@ -81,7 +88,12 @@ export function Idea({
 	};
 
 	return (
-		<div
+		<motion.div
+			layout
+			transition={rowSpring}
+			initial={{ opacity: 0, y: 12, scale: 0.98 }}
+			animate={{ opacity: 1, y: 0, scale: 1 }}
+			exit={{ opacity: 0, y: -10, scale: 0.98 }}
 			// Layout + zebra background + rounded corners for first/last rows.
 			className={`w-full ${position === "end" ? "h-20.75 min-h-20.75" : "h-20.5 min-h-20.5"} overflow-hidden group flex ${colorToggle ? "bg-[#0A0A0A]" : "bg-[#0D0D0D]"} border-x-[0.5px] border-t-[0.5px] border-[#2A2A2A] ${position === "start" ? "rounded-t-lg" : position === "end" ? "rounded-b-lg" : ""} ${position === "end" && "border-b-[0.5px]"}`}
 		>
@@ -131,6 +143,6 @@ export function Idea({
 				<DeleteIcon callback={del} />
 				<DownIcon callback={down} />
 			</div>
-		</div>
+		</motion.div>
 	);
 }
