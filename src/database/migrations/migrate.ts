@@ -3,7 +3,7 @@
  *     Becoming an expert won't happen overnight, but with a bit of patience, you'll get there
  *------------------------------------------------------------------------------------------------*/
 
-import type { SqliteDb } from "../database";
+import type { SqliteDriver } from "../database";
 
 const modules = import.meta.glob("./*.sql", { eager: true, as: "raw" });
 
@@ -21,7 +21,7 @@ const migrations = Object.entries(modules)
  *
  * @param {SqliteDb} database - The SQLite database instance.
  */
-export function runMigrations(database: SqliteDb): void {
+export function runMigrations(database: SqliteDriver): void {
 	database.exec(`
     CREATE TABLE IF NOT EXISTS schema_migrations (
       id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -6,11 +6,11 @@
 @import "tailwindcss";
 
 @font-face {
-  font-family: "QuickSand";
-  src: url("./assets/quicksand") format("truetype");
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
+	font-family: "QuickSand";
+	src: url("./assets/quicksand") format("truetype");
+	font-weight: 100 900;
+	font-style: normal;
+	font-display: swap;
 }
 
 /* Ensure the app takes full height */
@@ -18,7 +18,7 @@ html,
 body,
 #root {
 	height: 100%;
-  font-family: "QuickSand", sans-serif;
+	font-family: "QuickSand", sans-serif;
 }
 
 @keyframes idea-inline-edit-in {
@@ -38,10 +38,10 @@ body,
 
 /* Hide scrollbar */
 .hide-scrollbar {
-  scrollbar-width: none;        /* Firefox */
-  -ms-overflow-style: none;     /* IE & Edge */
+	scrollbar-width: none; /* Firefox */
+	-ms-overflow-style: none; /* IE & Edge */
 }
 
 .hide-scrollbar::-webkit-scrollbar {
-  display: none;                /* Chrome, Safari */
+	display: none; /* Chrome, Safari */
 }

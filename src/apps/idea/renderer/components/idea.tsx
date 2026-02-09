@@ -9,22 +9,22 @@ import { DeleteIcon, DownIcon, UpIcon } from "./icons";
 
 // Renders one idea row with inline editing for title/description.
 interface IdeaProps {
-  /**
-   * Data to be rendered for this idea.
-   */
+	/**
+	 * Data to be rendered for this idea.
+	 */
 	number: number;
 	title: string;
 	description: string;
 
-  /**
-   * Position and colorToggle for styling purposes (e.g., zebra background, rounded corners).
-   */
+	/**
+	 * Position and colorToggle for styling purposes (e.g., zebra background, rounded corners).
+	 */
 	position: "start" | "middle" | "end";
 	colorToggle: boolean;
 
-  /**
-   * Callbacks for the action buttons and inline edits.
-   */
+	/**
+	 * Callbacks for the action buttons and inline edits.
+	 */
 	up: () => void;
 	down: () => void;
 	delete: () => void;
@@ -69,11 +69,11 @@ export function Idea({
 		if (!editingField) return;
 		const value = draft.trimEnd();
 
-    // Value must not be empty.
-    if (value.length === 0) {
-      setEditingField(null);
-      return;
-    }
+		// Value must not be empty.
+		if (value.length === 0) {
+			setEditingField(null);
+			return;
+		}
 
 		if (editingField === "title") updateTitle(value);
 		if (editingField === "description") updateDescription(value);

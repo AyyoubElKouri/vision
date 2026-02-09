@@ -3,164 +3,123 @@
  *     Becoming an expert won't happen overnight, but with a bit of patience, you'll get there
  *------------------------------------------------------------------------------------------------*/
 
-import type { SqliteDb } from "../../../database/database";
-import type { CreateIdeaDto, IdeaDto, UpdateIdeaDto } from "../contracts/idea.contract";
-import type { Idea } from "./idea.model";
-
 /**
  * Repository for managing ideas in the SQLite database.
  */
+import { asc, desc, eq, gt, lt, sql } from "drizzle-orm";
+import type { Db } from "../../../database/database";
+import { ideas } from "../../../database/schema/ideas";
+import type {
+	CreateIdeaDto,
+	IdeaDto,
+	UpdateIdeaDto,
+} from "../contracts/idea.contract";
+import type { Idea } from "./idea.model";
+
 export class IdeaRepository {
-	private readonly stmtInsert: ReturnType<SqliteDb["prepare"]>;
-	private readonly stmtFindAll: ReturnType<SqliteDb["prepare"]>;
-	private readonly stmtFindById: ReturnType<SqliteDb["prepare"]>;
-	private readonly stmtFindMinNumberGreaterThan: ReturnType<SqliteDb["prepare"]>;
-	private readonly stmtFindMaxNumberLessThan: ReturnType<SqliteDb["prepare"]>;
-	private readonly stmtDeleteById: ReturnType<SqliteDb["prepare"]>;
-  private readonly stmtSwapNumbers: ReturnType<SqliteDb["prepare"]>;
-  private readonly stmtShiftNumbersDown: ReturnType<SqliteDb["prepare"]>;
-
-
-	constructor(private readonly db: SqliteDb) {
-		this.stmtInsert = this.db.prepare(
-			"INSERT INTO ideas(number, title, description) VALUES (?, ?, ?)",
-		);
-		this.stmtFindAll = this.db.prepare(
-			`SELECT
-        id,
-        number,
-        title,
-        description,
-        created_at as createdAt
-      FROM ideas
-      ORDER BY number`,
-		);
-		this.stmtFindById = this.db.prepare(
-			`SELECT
-        id,
-        number,
-        title,
-        description,
-        created_at as createdAt
-      FROM ideas
-      WHERE id = ?`,
-		);
-		this.stmtFindMinNumberGreaterThan = this.db.prepare(
-			`SELECT
-        id,
-        number,
-        title,
-        description,
-        created_at as createdAt
-      FROM ideas
-      WHERE number > ?
-      ORDER BY number ASC
-      LIMIT 1`,
-		);
-		this.stmtFindMaxNumberLessThan = this.db.prepare(
-			`SELECT
-        id,
-        number,
-        title,
-        description,
-        created_at as createdAt
-      FROM ideas
-      WHERE number < ?
-      ORDER BY number DESC
-      LIMIT 1`,
-		);
-		this.stmtDeleteById = this.db.prepare("DELETE FROM ideas WHERE id = ?");
-    this.stmtSwapNumbers = this.db.prepare(`
-      UPDATE ideas
-      SET number = CASE
-        WHEN id = ? THEN ?
-        WHEN id = ? THEN ?
-        ELSE number
-      END
-      WHERE id IN (?, ?)
-    `);
-    this.stmtShiftNumbersDown = this.db.prepare(
-      "UPDATE ideas SET number = number - 1 WHERE number > ?",
-    );
-	}
+	constructor(private readonly db: Db) {}
 
 	create(number: number, input: CreateIdeaDto): IdeaDto {
-		const result = this.stmtInsert.run([number, input.title, input.description]);
-		const id = Number(result.lastInsertRowid);
+		const result = this.db
+			.insert(ideas)
+			.values({
+				number,
+				title: input.title ?? "",
+				description: input.description ?? "",
+				createdAt: new Date().toISOString(),
+			})
+			.returning()
+			.get();
 
-		return this.stmtFindById.get(id) as IdeaDto;
+		return result as IdeaDto;
 	}
 
 	find(): Idea[] {
-		return this.stmtFindAll.all([]) as Idea[];
+		return this.db.select().from(ideas).orderBy(asc(ideas.number)).all();
 	}
 
 	findById(id: number): Idea | null {
-		return (this.stmtFindById.get(id) as Idea) ?? null;
+		return this.db.select().from(ideas).where(eq(ideas.id, id)).get() ?? null;
 	}
 
 	update(input: UpdateIdeaDto): IdeaDto | null {
-		const updates: string[] = [];
-		const values: unknown[] = [];
+		const updateValues: {
+			number?: number;
+			title?: string;
+			description?: string;
+		} = {};
 
-    if (input.number !== undefined) {
-      updates.push("number = ?");
-      values.push(input.number);
-    }
+		if (input.number !== undefined) updateValues.number = input.number;
+		if (input.title !== undefined) updateValues.title = input.title;
+		if (input.description !== undefined)
+			updateValues.description = input.description;
 
-		if (input.title !== undefined) {
-			updates.push("title = ?");
-			values.push(input.title);
-		}
+		this.db.update(ideas).set(updateValues).where(eq(ideas.id, input.id)).run();
 
-		if (input.description !== undefined) {
-			updates.push("description = ?");
-			values.push(input.description);
-		}
-
-		if (updates.length > 0) {
-			values.push(input.id);
-			this.db.prepare(`UPDATE ideas SET ${updates.join(", ")} WHERE id = ?`).run(...values);
-		}
-
-		return (this.stmtFindById.get(input.id) as IdeaDto) ?? null;
+		return this.findById(input.id) as IdeaDto | null;
 	}
 
 	deleteById(id: number): boolean {
-		const result = this.stmtDeleteById.run(id);
-		return result.changes > 0;
+		const res = this.db.delete(ideas).where(eq(ideas.id, id)).run();
+
+		return res.changes > 0;
 	}
 
 	findIdeaWithMinNumberGreaterThan(number: number): Idea | null {
-		return (this.stmtFindMinNumberGreaterThan.get(number) as Idea) ?? null;
+		return (
+			this.db
+				.select()
+				.from(ideas)
+				.where(gt(ideas.number, number))
+				.orderBy(asc(ideas.number))
+				.limit(1)
+				.get() ?? null
+		);
 	}
 
 	findIdeaWithMaxNumberLessThan(number: number): Idea | null {
-		return (this.stmtFindMaxNumberLessThan.get(number) as Idea) ?? null;
+		return (
+			this.db
+				.select()
+				.from(ideas)
+				.where(lt(ideas.number, number))
+				.orderBy(desc(ideas.number))
+				.limit(1)
+				.get() ?? null
+		);
 	}
 
-  swapNumbers(a: { id: number; number: number }, b: { id: number; number: number }): void {
-    const tx = this.db.transaction(() => {
-      this.stmtSwapNumbers.run([a.id, b.number, b.id, a.number, a.id, b.id]);
-    });
+	swapNumbers(
+		a: { id: number; number: number },
+		b: { id: number; number: number },
+	): void {
+		this.db.transaction((tx) => {
+			tx.update(ideas)
+				.set({ number: b.number })
+				.where(eq(ideas.id, a.id))
+				.run();
 
-    tx();
-  }
+			tx.update(ideas)
+				.set({ number: a.number })
+				.where(eq(ideas.id, b.id))
+				.run();
+		});
+	}
 
-  deleteAndReorder(id: number): boolean {
-    const tx = this.db.transaction(() => {
-      const idea = this.findById(id);
-      if (!idea) return false;
+	deleteAndReorder(id: number): boolean {
+		return this.db.transaction((tx) => {
+			const idea = tx.select().from(ideas).where(eq(ideas.id, id)).get();
 
-      const del = this.stmtDeleteById.run(id);
-      if (del.changes === 0) return false;
+			if (!idea) return false;
 
-      this.stmtShiftNumbersDown.run(idea.number);
-      return true;
-    });
+			tx.delete(ideas).where(eq(ideas.id, id)).run();
 
-    return tx();
-  }
+			tx.update(ideas)
+				.set({ number: sql`${ideas.number} - 1` })
+				.where(gt(ideas.number, idea.number))
+				.run();
 
-  
+			return true;
+		});
+	}
 }

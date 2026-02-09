@@ -13,11 +13,7 @@ import { IdeaPage } from "../apps/idea/renderer/idea.page";
 import { useNavStore } from "./navigation.store";
 
 export function TestPage() {
-  return (
-    <div className="w-full h-full bg-red-950">
-      Hello world
-    </div>
-  )
+	return <div className="w-full h-full bg-red-950">Hello world</div>;
 }
 
 /**

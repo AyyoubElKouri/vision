@@ -6,8 +6,8 @@
 import { useEffect, useState } from "react";
 
 import type { IdeaDto } from "../contracts/idea.contract";
-import { Idea } from "./components/idea";
 import { PlusIcon } from "./components/icons";
+import { Idea } from "./components/idea";
 
 // TODO: To be implemented later
 const toast = (message: string) => {
@@ -45,15 +45,15 @@ export function IdeaPage() {
 		void loadIdeas();
 	}, []);
 
-  // Handler for creating a new idea. It calls the create API and then reloads the list.
-  const onCreate = async () => {
-    try {
-      await window.api.ideas.create({});
-      await loadIdeas();
-    } catch (err) {
-      toast(err instanceof Error ? err.message : "Failed to create idea");
-    }
-  };
+	// Handler for creating a new idea. It calls the create API and then reloads the list.
+	const onCreate = async () => {
+		try {
+			await window.api.ideas.create({});
+			await loadIdeas();
+		} catch (err) {
+			toast(err instanceof Error ? err.message : "Failed to create idea");
+		}
+	};
 
 	// Handler for swapping an idea up or down. It calls the swap API and then reloads the list.
 	const onSwap = async (id: number, to: "up" | "down") => {
@@ -134,7 +134,7 @@ export function IdeaPage() {
 			<button
 				type="button"
 				className="w-full h-6.5 min-h-6.5 bg-[#0D0D0D] border-[0.5px] border-[#363636] flex justify-center items-center hover:bg-[#0A0A0A] rounded text-[#2A2A2A] transition-colors"
-        onClick={onCreate}
+				onClick={onCreate}
 			>
 				<PlusIcon />
 			</button>

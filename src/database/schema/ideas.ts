@@ -3,25 +3,12 @@
  *     Becoming an expert won't happen overnight, but with a bit of patience, you'll get there
  *------------------------------------------------------------------------------------------------*/
 
-export type IdeaDto = {
-	id: number;
-	number: number;
-	title: string;
-	description: string;
-	createdAt: string;
-};
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
-export type CreateIdeaDto = {
-	title?: string;
-	description?: string;
-};
-
-export type UpdateIdeaDto = {
-	id: number;
-	number?: number;
-} & Partial<CreateIdeaDto>;
-
-export type SwapIdeaDto = {
-	id: number;
-	to: "up" | "down";
-};
+export const ideas = sqliteTable("ideas", {
+	id: integer("id").primaryKey({ autoIncrement: true }),
+	number: integer("number").notNull(),
+	title: text("title").notNull(),
+	description: text("description").notNull(),
+	createdAt: text("created_at").notNull(),
+});

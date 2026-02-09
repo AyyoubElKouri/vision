@@ -6,7 +6,11 @@
 import { ipcMain } from "electron";
 
 import type { AppCore } from "../../../composition-root";
-import type { CreateIdeaDto, SwapIdeaDto, UpdateIdeaDto } from "../contracts/idea.contract";
+import type {
+	CreateIdeaDto,
+	SwapIdeaDto,
+	UpdateIdeaDto,
+} from "../contracts/idea.contract";
 
 export function registerIdeasIpc(core: AppCore) {
 	ipcMain.handle("ideas:getAll", () => core.ideas.getAllIdeas());
@@ -16,7 +20,9 @@ export function registerIdeasIpc(core: AppCore) {
 	ipcMain.handle("ideas:update", (_event, input: UpdateIdeaDto) =>
 		core.ideas.updateIdea(input),
 	);
-	ipcMain.handle("ideas:delete", (_event, id: number) => core.ideas.deleteIdea(id));
+	ipcMain.handle("ideas:delete", (_event, id: number) =>
+		core.ideas.deleteIdea(id),
+	);
 	ipcMain.handle("ideas:swap", (_event, input: SwapIdeaDto) =>
 		core.ideas.swapIdea(input),
 	);

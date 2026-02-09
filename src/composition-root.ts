@@ -5,7 +5,7 @@
 
 import { IdeaRepository } from "./apps/idea/main/idea.repository";
 import { IdeaService } from "./apps/idea/main/idea.service";
-import { openDatabase } from "./database/database";
+import { getDatabase, getSqliteDriver } from "./database/database";
 import { runMigrations } from "./database/migrations/migrate";
 
 export type AppCore = {
@@ -18,8 +18,10 @@ export type AppCore = {
  * @returns {AppCore} The initialized application core.
  */
 export function createAppCore(): AppCore {
-	const db = openDatabase();
-	runMigrations(db);
+	const sqlite = getSqliteDriver();
+	runMigrations(sqlite);
+
+	const db = getDatabase();
 
 	const ideaRepository = new IdeaRepository(db);
 
