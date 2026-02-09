@@ -3,7 +3,7 @@
  *     Becoming an expert won't happen overnight, but with a bit of patience, you'll get there
  *------------------------------------------------------------------------------------------------*/
 
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 import { DeleteIcon, DownIcon, UpIcon } from "./icons";
@@ -58,10 +58,13 @@ export function Idea({
 	const [draft, setDraft] = useState("");
 	const inputRef = useRef<HTMLInputElement | null>(null);
 
-	// Autofocus the input when entering edit mode (without selecting text).
+	// Autofocus the input when entering edit mode (place cursor at end).
 	useEffect(() => {
 		if (editingField && inputRef.current) {
-			inputRef.current.focus();
+			const input = inputRef.current;
+			input.focus({ preventScroll: true });
+			const length = input.value.length;
+			input.setSelectionRange(length, length);
 		}
 	}, [editingField]);
 
@@ -104,36 +107,51 @@ export function Idea({
 
 			{/* --- The title and description --- */}
 			<div className="w-full min-w-0 flex flex-col justify-center pl-3.75">
-				{editingField ? (
-					// Single input swaps in for either title or description.
-					<input
-						ref={inputRef}
-						value={draft}
-						onChange={(event) => setDraft(event.target.value)}
-						onBlur={commitEdit}
-						onKeyDown={(event) => {
-							if (event.key === "Enter") commitEdit();
-							if (event.key === "Escape") setEditingField(null);
-						}}
-						className="w-full bg-[#0E0E0E] border-[0.5px] border-[#2A2A2A] rounded px-2.5 py-1.5 text-[16px] text-[#B5B5B5] outline-none focus:border-[#3A3A3A] idea-inline-edit"
-					/>
-				) : (
-					<>
-						{/* Truncate long text to keep row height stable. */}
-						<h2
-							onDoubleClick={() => startEdit("title")}
-							className="text-[18px] font-medium text-[#B5B5B5] cursor-text truncate w-full"
+				<AnimatePresence mode="wait" initial={false}>
+					{editingField ? (
+						// Single input swaps in for either title or description.
+						<motion.input
+							key="idea-edit"
+							ref={inputRef}
+							autoFocus
+							value={draft}
+							onChange={(event) => setDraft(event.target.value)}
+							onBlur={commitEdit}
+							onKeyDown={(event) => {
+								if (event.key === "Enter") commitEdit();
+								if (event.key === "Escape") setEditingField(null);
+							}}
+							className="w-full bg-[#0E0E0E] border-[0.5px] border-[#2A2A2A] rounded px-2.5 py-1.5 text-[16px] text-[#B5B5B5] outline-none focus:border-[#3A3A3A] idea-inline-edit"
+							initial={{ opacity: 0, y: 4, scale: 0.99 }}
+							animate={{ opacity: 1, y: 0, scale: 1 }}
+							exit={{ opacity: 0, y: -4, scale: 0.99 }}
+							transition={{ duration: 0.08, ease: "easeOut" }}
+						/>
+					) : (
+						<motion.div
+							key="idea-display"
+							className="flex flex-col gap-0.5"
+							initial={{ opacity: 0, y: 4 }}
+							animate={{ opacity: 1, y: 0 }}
+							exit={{ opacity: 0, y: -4 }}
+							transition={{ duration: 0.08, ease: "easeOut" }}
 						>
-							{title}
-						</h2>
-						<p
-							onDoubleClick={() => startEdit("description")}
-							className="text-[16px] font-normal text-[#A8A8A8] cursor-text truncate w-full"
-						>
-							{description}
-						</p>
-					</>
-				)}
+							{/* Truncate long text to keep row height stable. */}
+							<h2
+								onDoubleClick={() => startEdit("title")}
+								className="text-[18px] font-medium text-[#B5B5B5] cursor-text truncate w-full"
+							>
+								{title}
+							</h2>
+							<p
+								onDoubleClick={() => startEdit("description")}
+								className="text-[16px] font-normal text-[#A8A8A8] cursor-text truncate w-full"
+							>
+								{description}
+							</p>
+						</motion.div>
+					)}
+				</AnimatePresence>
 			</div>
 
 			{/* --- The action buttons --- */}
