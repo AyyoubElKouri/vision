@@ -41,6 +41,7 @@ export function IdeaPage() {
 		}
 	};
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <load ideas only on mount one time>
 	useEffect(() => {
 		void loadIdeas();
 	}, []);
