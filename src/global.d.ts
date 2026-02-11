@@ -3,7 +3,7 @@
  *     Becoming an expert won't happen overnight, but with a bit of patience, you'll get there
  *------------------------------------------------------------------------------------------------*/
 
-import type { ElectronApi } from "./preload/preload";
+import type { ElectronApi } from "./electron/preload";
 
 declare global {
 	interface Window {

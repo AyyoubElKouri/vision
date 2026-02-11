@@ -4,8 +4,15 @@
  *------------------------------------------------------------------------------------------------*/
 
 import { contextBridge } from "electron";
+import type { IdeasAPI } from "@/apps/ideas/application/ideas.api";
+import { registerRenderer } from "./register-app";
 
-import { ideasApi } from "./api/ideas.api";
+/**
+ * Expose APIs to the renderer process by registering them 
+ * with the same name as in the main process.
+ */
+
+const ideasApi = registerRenderer<IdeasAPI>("ideas");
 
 const api = {
 	ideas: ideasApi,

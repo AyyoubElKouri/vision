@@ -6,8 +6,9 @@
 import path from "node:path";
 import { app, BrowserWindow } from "electron";
 import started from "electron-squirrel-startup";
-import { registerIdeasIpc } from "./apps/idea/main/idea.ipc";
-import { createAppCore } from "./composition-root";
+import { bootstrap } from "./bootstrap";
+import { registerMain } from "./register-app";
+import type { IdeasAPI } from "@/apps/ideas/application/ideas.api";
 
 // Hide chromium logs
 app.commandLine.appendSwitch("log-level", "3");
@@ -31,21 +32,21 @@ const createWindow = () => {
 	if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
 		mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
 	} else {
-		mainWindow.loadFile(
-			path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`),
-		);
+		mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
 	}
 
 	// Remove menu bar
 	mainWindow.setMenu(null);
 };
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
+/**-------------------------------------------------------------------------------------------------
+ * 
+ *         Registers the app's APIs and creates the main window when Electron is ready.
+ * 
+ -------------------------------------------------------------------------------------------------*/
 app.whenReady().then(() => {
-	const core = createAppCore();
-	registerIdeasIpc(core);
+	const core = bootstrap();
+	registerMain<IdeasAPI>("ideas", core.ideas);
 
 	createWindow();
 
@@ -66,6 +67,3 @@ app.on("window-all-closed", () => {
 		app.quit();
 	}
 });
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.

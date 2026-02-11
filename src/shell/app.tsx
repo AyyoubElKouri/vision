@@ -7,9 +7,9 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import "./app.css";
 
-import { IdeaIcon } from "../apps/idea/renderer/idea.icon";
+import { IdeaIcon } from "@/apps/ideas/presentation/idea.icon";
 
-import { IdeaPage } from "../apps/idea/renderer/idea.page";
+import { IdeaPage } from "@/apps/ideas/presentation/idea.page";
 import { useNavStore } from "./navigation.store";
 
 export function TestPage() {
@@ -20,23 +20,13 @@ export function TestPage() {
  * Sidebar component that renders apps icons in a vertical layout.
  */
 function Sidebar({ children }: { children?: React.ReactNode }) {
-	return (
-		<div className="w-18 h-full flex flex-col items-center gap-4 pt-4">
-			{children}
-		</div>
-	);
+	return <div className="w-18 h-full flex flex-col items-center gap-4 pt-4">{children}</div>;
 }
 
 /**
  * Main content area that displays the selected app's content.
  */
-function MainContentArea({
-	children,
-	route,
-}: {
-	children?: React.ReactNode;
-	route: string;
-}) {
+function MainContentArea({ children, route }: { children?: React.ReactNode; route: string }) {
 	return (
 		<div className="w-full h-full overflow-hidden">
 			<AnimatePresence mode="popLayout" initial={false}>
@@ -84,17 +74,11 @@ export default function App() {
 		<div className="w-full h-full bg-[#0A0A0A] flex">
 			{/* --- Left sidebar --- */}
 			<Sidebar>
-				<IdeaIcon
-					selected={route === "idea"}
-					onClick={() => setRoute("idea")}
-					label="Idea"
-				/>
+				<IdeaIcon selected={route === "idea"} onClick={() => setRoute("idea")} label="Idea" />
 			</Sidebar>
 
 			{/* --- Main content area --- */}
-			<MainContentArea route={route}>
-				{getContentForRoute(route)}
-			</MainContentArea>
+			<MainContentArea route={route}>{getContentForRoute(route)}</MainContentArea>
 
 			{/* --- Right sidebar --- */}
 			<Sidebar></Sidebar>

@@ -28,12 +28,12 @@ module.exports = {
 				build: [
 					{
 						// `entry` is just an alias for `build.lib.entry` in the corresponding file of `config`.
-						entry: "src/main.ts",
+						entry: "src/electron/electron-main.ts",
 						config: "vite.main.config.mjs",
 						target: "main",
 					},
 					{
-						entry: "src/preload/preload.ts",
+						entry: "src/electron/preload.ts",
 						config: "vite.preload.config.mjs",
 						target: "preload",
 					},

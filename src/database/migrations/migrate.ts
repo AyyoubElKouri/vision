@@ -3,7 +3,7 @@
  *     Becoming an expert won't happen overnight, but with a bit of patience, you'll get there
  *------------------------------------------------------------------------------------------------*/
 
-import type { SqliteDriver } from "../database";
+import type { SqliteDriver } from "@/database/database";
 
 const modules = import.meta.glob("./*.sql", { eager: true, as: "raw" });
 
@@ -42,9 +42,7 @@ export function runMigrations(database: SqliteDriver): void {
 			database.exec(m.sql);
 
 			database
-				.prepare(
-					"INSERT INTO schema_migrations(filename, applied_at) VALUES (?, datetime('now'))",
-				)
+				.prepare("INSERT INTO schema_migrations(filename, applied_at) VALUES (?, datetime('now'))")
 				.run(m.filename);
 		}
 

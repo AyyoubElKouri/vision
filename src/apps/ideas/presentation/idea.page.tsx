@@ -6,7 +6,7 @@
 import { AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 
-import type { IdeaDto } from "../contracts/idea.contract";
+import type { Idea as IdeaEntity } from "../domain/ideas.entity";
 import { PlusIcon } from "./components/icons";
 import { Idea } from "./components/idea";
 
@@ -30,12 +30,12 @@ function getPosition(index: number, length: number) {
  * and refreshing the list.
  */
 export function IdeaPage() {
-	const [ideas, setIdeas] = useState<IdeaDto[]>([]);
+	const [ideas, setIdeas] = useState<IdeaEntity[]>([]);
 
 	// Loads the list of ideas from the main process and updates the state.
 	const loadIdeas = async () => {
 		try {
-			const data = await window.api.ideas.getAll();
+			const data = await window.api.ideas.getAllIdeas();
 			setIdeas(data);
 		} catch (err) {
 			toast(err instanceof Error ? err.message : "Failed to load ideas");
@@ -50,7 +50,7 @@ export function IdeaPage() {
 	// Handler for creating a new idea. It calls the create API and then reloads the list.
 	const onCreate = async () => {
 		try {
-			await window.api.ideas.create({});
+			await window.api.ideas.newIdea({});
 			await loadIdeas();
 		} catch (err) {
 			toast(err instanceof Error ? err.message : "Failed to create idea");
@@ -60,7 +60,12 @@ export function IdeaPage() {
 	// Handler for swapping an idea up or down. It calls the swap API and then reloads the list.
 	const onSwap = async (id: number, to: "up" | "down") => {
 		try {
-			await window.api.ideas.swap({ id, to });
+			const index = ideas.findIndex((idea) => idea.id === id);
+			const targetIndex = to === "up" ? index - 1 : index + 1;
+
+			if (targetIndex < 0 || targetIndex >= ideas.length) return;
+
+			await window.api.ideas.swapIdeas({ id1: id, id2: ideas[targetIndex].id });
 			await loadIdeas();
 		} catch (err) {
 			toast(err instanceof Error ? err.message : "Failed to swap idea");
@@ -70,7 +75,7 @@ export function IdeaPage() {
 	// Handler for deleting an idea. It calls the delete API and then reloads the list.
 	const onDelete = async (id: number) => {
 		try {
-			await window.api.ideas.delete(id);
+			await window.api.ideas.deleteIdea(id);
 			await loadIdeas();
 		} catch (err) {
 			toast(err instanceof Error ? err.message : "Failed to delete idea");
@@ -80,7 +85,7 @@ export function IdeaPage() {
 	// Handler for updating the title of an idea. It calls the update API and then reloads the list.
 	const onUpdateTitle = async (id: number, newTitle: string) => {
 		try {
-			await window.api.ideas.update({ id, title: newTitle });
+			await window.api.ideas.updateIdea({ id, title: newTitle });
 			await loadIdeas();
 		} catch (err) {
 			toast(err instanceof Error ? err.message : "Failed to update title");
@@ -90,12 +95,10 @@ export function IdeaPage() {
 	// Handler for updating the description of an idea. It calls the update API and then reloads.
 	const onUpdateDescription = async (id: number, newDescription: string) => {
 		try {
-			await window.api.ideas.update({ id, description: newDescription });
+			await window.api.ideas.updateIdea({ id, description: newDescription });
 			await loadIdeas();
 		} catch (err) {
-			toast(
-				err instanceof Error ? err.message : "Failed to update description",
-			);
+			toast(err instanceof Error ? err.message : "Failed to update description");
 		}
 	};
 
@@ -105,8 +108,8 @@ export function IdeaPage() {
 			<header>
 				<h1 className="text-2xl font-semibold text-white/80">Ideas</h1>
 				<p className="text-sm font-medium text-white/50 mb-2">
-					Write down your brilliant ideas, your vision, your dreams, or anything
-					you want to remember, and make your future self proud.
+					Write down your brilliant ideas, your vision, your dreams, or anything you want to
+					remember, and make your future self proud.
 				</p>
 				<div className="w-full h-px bg-white/20" />
 			</header>
@@ -126,9 +129,7 @@ export function IdeaPage() {
 							down={() => onSwap(idea.id, "down")}
 							delete={() => onDelete(idea.id)}
 							updateTitle={(newTitle) => onUpdateTitle(idea.id, newTitle)}
-							updateDescription={(newDescription) =>
-								onUpdateDescription(idea.id, newDescription)
-							}
+							updateDescription={(newDescription) => onUpdateDescription(idea.id, newDescription)}
 						/>
 					))}
 				</AnimatePresence>
