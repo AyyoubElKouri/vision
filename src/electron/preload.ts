@@ -5,6 +5,7 @@
 
 import { contextBridge } from "electron";
 import type { IdeasAPI } from "@/apps/ideas/application/ideas.api";
+import type { PlansAPI } from "@/apps/plans/application/plans.api";
 import { registerRenderer } from "./register-app";
 
 /**
@@ -13,9 +14,11 @@ import { registerRenderer } from "./register-app";
  */
 
 const ideasApi = registerRenderer<IdeasAPI>("ideas");
+const plansApi = registerRenderer<PlansAPI>("plans");
 
 const api = {
 	ideas: ideasApi,
+	plans: plansApi,
 } as const;
 
 contextBridge.exposeInMainWorld("api", api);

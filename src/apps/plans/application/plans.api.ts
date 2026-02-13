@@ -3,16 +3,14 @@
  *     Becoming an expert won't happen overnight, but with a bit of patience, you'll get there
  *------------------------------------------------------------------------------------------------*/
 
-import { create } from "zustand";
-
-export type RouteId = "ideas" | "plans";
-
-interface NavStore {
-	route: RouteId;
-	setRoute: (r: RouteId) => void;
+/**
+ * @interface PlansAPI
+ * PlansAPI defines the interface for the plans application layer.
+ */
+export interface PlansAPI {
+  /**
+   * Returns a hello world greeting.
+   * @returns a greeting string.
+   */
+  hello: () => Promise<string>;
 }
-
-export const useNavStore = create<NavStore>((set) => ({
-	route: "ideas",
-	setRoute: (route) => set({ route }),
-}));

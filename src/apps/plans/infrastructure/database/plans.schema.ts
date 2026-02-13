@@ -3,16 +3,9 @@
  *     Becoming an expert won't happen overnight, but with a bit of patience, you'll get there
  *------------------------------------------------------------------------------------------------*/
 
-import { create } from "zustand";
-
-export type RouteId = "ideas" | "plans";
-
-interface NavStore {
-	route: RouteId;
-	setRoute: (r: RouteId) => void;
-}
-
-export const useNavStore = create<NavStore>((set) => ({
-	route: "ideas",
-	setRoute: (route) => set({ route }),
-}));
+// TODO: Define your Drizzle schema here.
+// import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+//
+// export const planss = sqliteTable("planss", {
+//   id: integer("id").primaryKey({ autoIncrement: true }),
+// });

@@ -3,16 +3,12 @@
  *     Becoming an expert won't happen overnight, but with a bit of patience, you'll get there
  *------------------------------------------------------------------------------------------------*/
 
-import { create } from "zustand";
-
-export type RouteId = "ideas" | "plans";
-
-interface NavStore {
-	route: RouteId;
-	setRoute: (r: RouteId) => void;
-}
-
-export const useNavStore = create<NavStore>((set) => ({
-	route: "ideas",
-	setRoute: (route) => set({ route }),
-}));
+/**
+ * @type {Plans}
+ * This type represents the plans entity in the domain layer.
+ *
+ * @property {number} id - The unique identifier.
+ */
+export type Plans = {
+  id: number;
+};

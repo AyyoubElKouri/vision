@@ -3,16 +3,16 @@
  *     Becoming an expert won't happen overnight, but with a bit of patience, you'll get there
  *------------------------------------------------------------------------------------------------*/
 
-import { create } from "zustand";
-
-export type RouteId = "ideas" | "plans";
-
-interface NavStore {
-	route: RouteId;
-	setRoute: (r: RouteId) => void;
+/**
+ * @interface PlansRepository
+ *
+ * This interface defines the contract for the plans repository,
+ * it will be implemented by the infrastructure layer to interact with the database.
+ */
+export interface PlansRepository {
+  /**
+   * Returns a hello world message.
+   * @returns A promise that resolves to a greeting string.
+   */
+  hello(): Promise<string>;
 }
-
-export const useNavStore = create<NavStore>((set) => ({
-	route: "ideas",
-	setRoute: (route) => set({ route }),
-}));

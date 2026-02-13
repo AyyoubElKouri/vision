@@ -9,6 +9,7 @@ import started from "electron-squirrel-startup";
 import { bootstrap } from "./bootstrap";
 import { registerMain } from "./register-app";
 import type { IdeasAPI } from "@/apps/ideas/application/ideas.api";
+import type { PlansAPI } from "@/apps/plans/application/plans.api";
 
 // Hide chromium logs
 app.commandLine.appendSwitch("log-level", "3");
@@ -47,6 +48,7 @@ const createWindow = () => {
 app.whenReady().then(() => {
 	const core = bootstrap();
 	registerMain<IdeasAPI>("ideas", core.ideas);
+  registerMain<PlansAPI>("plans", core.plans);
 
 	createWindow();
 

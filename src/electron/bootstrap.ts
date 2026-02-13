@@ -5,11 +5,16 @@
 
 import { IdeasService } from "@/apps/ideas/application/ideas.service";
 import { IdeasSqliteRepository } from "@/apps/ideas/infrastructure/database/ideas.sqlite.repository";
+
+import { PlansService } from "@/apps/plans/application/plans.service";
+import { PlansSqliteRepository } from "@/apps/plans/infrastructure/database/plans.sqlite.repository";
+
 import { getDatabase, getSqliteDriver } from "@/database/database";
 import { runMigrations } from "@/database/migrations/migrate";
 
 export type ApplicationCore = {
 	ideas: IdeasService;
+  plans: PlansService;
 };
 
 /**
@@ -24,13 +29,16 @@ export function bootstrap(): ApplicationCore {
 
 	const db = getDatabase();
 
-	// Repositories
+	// Ideas
 	const ideasRepository = new IdeasSqliteRepository(db);
-
-	// Services
 	const ideasService = new IdeasService(ideasRepository);
+
+	// Plans
+  const plansRepository = new PlansSqliteRepository();
+  const plansService = new PlansService(plansRepository);
 
 	return {
 		ideas: ideasService,
+    plans: plansService,
 	};
 }

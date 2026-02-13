@@ -8,8 +8,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import "./app.css";
 
 import { IdeaIcon } from "@/apps/ideas/presentation/idea.icon";
-
 import { IdeaPage } from "@/apps/ideas/presentation/idea.page";
+
+import { PlansIcon } from "@/apps/plans/presentation/plans.icon";
+import { PlansPage } from "@/apps/plans/presentation/plans.page";
+
 import { useNavStore } from "./navigation.store";
 
 export function TestPage() {
@@ -57,8 +60,10 @@ function MainContentArea({ children, route }: { children?: React.ReactNode; rout
  */
 function getContentForRoute(route: string) {
 	switch (route) {
-		case "idea":
+		case "ideas":
 			return <IdeaPage />;
+    case "plans":
+      return <PlansPage />;
 		default:
 			return <div></div>;
 	}
@@ -74,7 +79,8 @@ export default function App() {
 		<div className="w-full h-full bg-[#0A0A0A] flex">
 			{/* --- Left sidebar --- */}
 			<Sidebar>
-				<IdeaIcon selected={route === "idea"} onClick={() => setRoute("idea")} label="Idea" />
+				<IdeaIcon selected={route === "ideas"} onClick={() => setRoute("ideas")} label="Idea" />
+        <PlansIcon selected={route === "plans"} onClick={() => setRoute("plans")} label="Plans" />
 			</Sidebar>
 
 			{/* --- Main content area --- */}
