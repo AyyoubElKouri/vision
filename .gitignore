@@ -90,3 +90,6 @@ typings/
 
 # Electron-Forge
 out/
+
+# Code design and architectural decision (is just for developers)
+design/
